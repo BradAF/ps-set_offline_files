@@ -51,6 +51,11 @@ function Get-ItemOfflineStatus ($itemPath) {
         Where-object ItemPath -eq $itemPath
 }
 
+Write-Output "`nBefore:"
+
+# Report the initial list of items and their status before doing any changes
+Get-OfflineStatus
+
 Get-OfflineStatus | 
         Where-Object ConnectState -ne "Offline" |
         ForEach-Object {
@@ -62,11 +67,14 @@ Get-OfflineStatus |
                 ([WMIClass]"\\localhost\root\cimv2:Win32_OfflineFilesCache").TransitionOffline(
                     ($_.Path),
                     $true
-                )
+                ) | Out-Null
 
                 $i++
             } Until (((Get-ItemOfflineStatus $_.Path).ConnectionInfo.Connecstate -eq 2) -or ($i = 5))
         } #ForEach-Object
+
+
+Write-Output "`nAfter:"
 
 # Just return a final list of items and their status
 Get-OfflineStatus
