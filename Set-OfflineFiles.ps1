@@ -1,43 +1,43 @@
 function Get-OfflineStatus {
 
     # Return the top 4 items configured for offline files, and their 'Online/Offline' status
-    Get-WmiObject `
-        -Class win32_offlineFilesItem | 
-            Select-Object `
-                -First 4 `
+    Get-WmiObject `
+        -Class win32_offlineFilesItem | 
+            Select-Object `
+                -First 4 `
                 -Skip 1 `
-                -Property `
-                    @{
-                        N="Path";
-                        E={$_.ItemPath}
-                    },
-                    @{
-                        N="ConnectState";
-                        E={
-                            switch ($_.ConnectionInfo.Connectstate) {
-                                (1) {"Offline"}
-                                (2) {"Online"}
-                                (3) {"Transparently Cached"}
-                                (4) {"Partly Transparently Cached"}
-                                default {$_.ConnectionInfo.ConnectState}
-                            }
-                        }
-                    },
-                    @{
-                        N="OfflineReason";
-                        E={
-                            switch ($_.Connectioninfo.OfflineReason) {    
-                                (0) {"Unknown"}
-                                (1) {"Not applicable"}
-                                (2) {"Working offline"}
-                                (3) {"Slow Connection"}
-                                (4) {"Net disconnected"}
-                                (5) {"Need to sync item"}
-                                (6) {"Item suspended"}
-                                default {$_.Connectioninfo.OfflineReason}
-                            }
-                        }
-                    }
+                -Property `
+                    @{
+                        N="Path";
+                        E={$_.ItemPath}
+                    },
+                    @{
+                        N="ConnectState";
+                        E={
+                            switch ($_.ConnectionInfo.Connectstate) {
+                                (1) {"Offline"}
+                                (2) {"Online"}
+                                (3) {"Transparently Cached"}
+                                (4) {"Partly Transparently Cached"}
+                                default {$_.ConnectionInfo.ConnectState}
+                            }
+                        }
+                    },
+                    @{
+                        N="OfflineReason";
+                        E={
+                            switch ($_.Connectioninfo.OfflineReason) {    
+                                (0) {"Unknown"}
+                                (1) {"Not applicable"}
+                                (2) {"Working offline"}
+                                (3) {"Slow Connection"}
+                                (4) {"Net disconnected"}
+                                (5) {"Need to sync item"}
+                                (6) {"Item suspended"}
+                                default {$_.Connectioninfo.OfflineReason}
+                            }
+                        }
+                    }
 }
 
 function Get-ItemOfflineStatus ($itemPath) {
