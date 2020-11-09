@@ -34,7 +34,7 @@ function Get-OfflineStatus {
                                 (4) {"Net disconnected"}
                                 (5) {"Need to sync item"}
                                 (6) {"Item suspended"}
-                                default {$_.ConnectionInfo.ConnectState}
+                                default {$_.Connectioninfo.OfflineReason}
                             }
                         }
                     }
