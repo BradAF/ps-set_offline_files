@@ -51,10 +51,15 @@ function Get-ItemOfflineStatus ($itemPath) {
         Where-object ItemPath -eq $itemPath
 }
 
+## main
+
+# Check the Offline Status of the top 4 items returned. If not Offline, set them Offline
 Get-OfflineStatus | 
         Where-Object ConnectState -ne "Offline" |
         ForEach-Object {
-            $i = 1
+            
+            # Initialize attempt counter at 1
+            $i = 0
             
             # Repeat attempt to set the item Offline 5 times, or until successful
             Do {
@@ -64,9 +69,16 @@ Get-OfflineStatus |
                     $true
                 ) | Out-Null
 
+                # Increment attempt counter
                 $i++
-            } Until (((Get-ItemOfflineStatus $_.Path).ConnectionInfo.Connecstate -eq 2) -or ($i = 5))
+            } Until (((Get-ItemOfflineStatus $_.Path).ConnectionInfo.Connectstate -eq 1) -or ($i -eq 5))
         } #ForEach-Object
 
 # Just return a final list of items and their status
 Get-OfflineStatus
+
+if ($i -gt 0) {
+    Write-Warning "Please restart any running applications or close and re-open any open documents to complete the process."
+}
+
+## end main
